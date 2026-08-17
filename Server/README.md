@@ -73,6 +73,8 @@ Solo se devuelven órganos con `is_published = true` (requiere validación médi
 
 ## Docker
 
+Para desplegar el **stack completo** (frontend + backend tras un reverse proxy), ver [`../DEPLOY.md`](../DEPLOY.md). Lo que sigue es levantar solo el backend, que es lo habitual mientras se desarrolla el cliente con `npm run dev`.
+
 El proyecto incluye `Dockerfile` (multi-stage con `uv`, imagen final sin `uv` ni herramientas de build) y un `docker-compose.yml` en la raíz del monorepo. El contenedor aplica las migraciones automáticamente al arrancar (`docker-entrypoint.sh`) y persiste la base SQLite en un volumen nombrado.
 
 ```bash

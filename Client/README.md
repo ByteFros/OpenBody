@@ -34,6 +34,12 @@ npm run lint        # oxlint
 npm run api:types   # regenera src/api/schema.d.ts desde el backend
 ```
 
+## Despliegue
+
+En producción el cliente se sirve con nginx, que además hace de reverse proxy hacia el backend (mismo origen, sin CORS). Ver [`../DEPLOY.md`](../DEPLOY.md).
+
+Importante: `VITE_API_BASE_URL` se hornea en el bundle **en tiempo de compilación**. La imagen se construye con ese valor vacío para que el cliente use rutas relativas.
+
 ## Estructura
 
 ```
