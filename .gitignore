@@ -1,0 +1,78 @@
+# ==========================
+# Python / FastAPI (Server)
+# ==========================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+Server/.venv/
+Server/venv/
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+.eggs/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Testing / coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.mypy_cache/
+.ruff_cache/
+
+# Databases
+*.sqlite3
+*.db
+
+# Alembic (opcional, descomentar si no se versionan migraciones)
+# migrations/versions/*.py
+
+# ==========================
+# Node / React (Client)
+# ==========================
+node_modules/
+Client/node_modules/
+
+# Build output
+dist/
+build/
+Client/dist/
+Client/build/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Cache
+.cache/
+.vite/
+.eslintcache
+
+# Environment variables
+Client/.env
+Client/.env.*
+!Client/.env.example
+
+# ==========================
+# Editor / OS
+# ==========================
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.swp
