@@ -69,10 +69,11 @@ Client/.env.*
 !Client/.env.example
 
 # ==========================
-# Editor / OS
+# Editor / OS / herramientas
 # ==========================
 .vscode/
 .idea/
+.claude/
 .DS_Store
 Thumbs.db
 *.swp
