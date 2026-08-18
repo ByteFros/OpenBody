@@ -20,7 +20,7 @@ export function Scene({ selectedMeshId, onSelect }: SceneProps) {
         <ambientLight intensity={0.6} />
         <directionalLight position={[3, 4, 5]} intensity={1} />
         <PlaceholderBody selectedMeshId={selectedMeshId} onSelect={onSelect} />
-        <OrbitControls ref={controlsRef} makeDefault minDistance={2.5} maxDistance={8} />
+        <OrbitControls ref={controlsRef} makeDefault minDistance={2} maxDistance={10} />
       </Canvas>
 
       <Button
