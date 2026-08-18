@@ -33,10 +33,15 @@ export function useOrgan(slug: string) {
 
 /**
  * Resuelve la ficha de un órgano a partir del nombre de su malla en el glTF.
- * Es el contrato que usará el visor 3D al detectar un clic sobre una malla.
+ * Es el contrato que usa el visor 3D al detectar un clic sobre una malla.
+ * `meshId` es `null` cuando no hay ningún órgano seleccionado: la query queda
+ * deshabilitada en vez de pedir una ruta vacía.
  */
-export function useOrganByMesh(meshId: string) {
-  return $api.useQuery('get', '/api/v1/organs/by-mesh/{mesh_id}', {
-    params: { path: { mesh_id: meshId } },
-  })
+export function useOrganByMesh(meshId: string | null) {
+  return $api.useQuery(
+    'get',
+    '/api/v1/organs/by-mesh/{mesh_id}',
+    { params: { path: { mesh_id: meshId ?? '' } } },
+    { enabled: meshId !== null },
+  )
 }
