@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router'
 
+import { ThemeToggle } from '@/components/theme/ThemeToggle'
 import { cn } from '@/lib/utils'
 
 const navItems = [
@@ -32,6 +33,10 @@ export function RootLayout() {
               </li>
             ))}
           </ul>
+
+          <div className="ml-auto">
+            <ThemeToggle />
+          </div>
         </nav>
       </header>
 

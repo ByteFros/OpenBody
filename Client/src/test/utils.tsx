@@ -3,12 +3,14 @@ import { render } from '@testing-library/react'
 import type { ReactNode } from 'react'
 import { RouterProvider, createMemoryRouter } from 'react-router'
 
+import { ThemeProvider } from '@/components/theme/ThemeProvider'
 import { createQueryClient } from '@/lib/queryClient'
 
 /**
  * Renderiza un componente dentro de un router en memoria y un QueryClient
  * aislado que reutiliza la configuración real de la app (solo desactiva los
- * reintentos, para que los tests de error no esperen).
+ * reintentos, para que los tests de error no esperen). Incluye el ThemeProvider
+ * porque cualquier componente puede consumir useTheme, directamente o vía el visor.
  */
 export function renderWithProviders(
   ui: ReactNode,
@@ -21,9 +23,11 @@ export function renderWithProviders(
   })
 
   return render(
-    <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
-    </QueryClientProvider>,
+    <ThemeProvider>
+      <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </ThemeProvider>,
   )
 }
 
