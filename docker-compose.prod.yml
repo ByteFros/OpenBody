@@ -1,0 +1,50 @@
+# Stack completo tras un reverse proxy: nginx sirve el frontend y redirige
+# /api y /health al backend. El único puerto publicado es el de nginx, así que
+# navegador y API comparten origen y no interviene CORS.
+#
+#   docker compose -f docker-compose.prod.yml up -d --build
+#
+services:
+  client:
+    build:
+      context: ./Client
+    ports:
+      - "${WEB_PORT:-8080}:80"
+    depends_on:
+      server:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      # 127.0.0.1, no localhost: en esta imagen "localhost" resuelve primero a ::1 y
+      # nginx solo escucha en 0.0.0.0:80, así que wget fallaba con connection refused
+      # aunque el contenedor sirviera tráfico externo sin problema.
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s
+
+  server:
+    build:
+      context: ./Server
+    # Sin `ports`: solo es accesible desde la red interna, a través de nginx.
+    expose:
+      - "8000"
+    environment:
+      ENVIRONMENT: production
+      DATABASE_URL: sqlite+aiosqlite:///./data/openbody.db
+      # Vacío a propósito: al ir todo por el mismo origen no hay peticiones
+      # cross-origin que permitir.
+      CORS_ORIGINS: "[]"
+    volumes:
+      - server_data:/app/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+volumes:
+  server_data:

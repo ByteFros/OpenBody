@@ -69,10 +69,13 @@ Client/.env.*
 !Client/.env.example
 
 # ==========================
-# Editor / OS
+# Editor / OS / herramientas
 # ==========================
 .vscode/
 .idea/
+.claude/
+.agents/
+skills-lock.json
 .DS_Store
 Thumbs.db
 *.swp
