@@ -1,6 +1,6 @@
 # OpenBody Client
 
-Frontend del MVP de OpenBody. Por ahora contiene **solo la arquitectura**: routing, capa de conexión con la API y páginas placeholder que ya leen datos reales. El diseño visual y el visor 3D llegan en la siguiente iteración.
+Frontend del MVP de OpenBody: routing, capa de conexión con la API, y un visor 3D funcional en `/explorer` con el cuerpo humano y los 7 órganos del MVP en malla real. El diseño visual (estilos, layout definitivo) todavía está pendiente — las páginas funcionan pero no están maquetadas.
 
 ## Stack
 
@@ -54,10 +54,34 @@ src/
 ├── components/
 │   ├── ui/           # shadcn (lo genera su CLI)
 │   └── common/       # componentes propios reutilizables
+├── features/
+│   └── explorer/     # ← visor 3D (ver sección abajo)
 ├── layouts/          # shell de la app
 ├── pages/            # una por ruta
 └── lib/              # utilidades y config del QueryClient
 ```
+
+## Visor 3D (`/explorer`)
+
+React Three Fiber + drei. El cuerpo y los 7 órganos del MVP son mallas reales (no geometría procedural), exportadas de Blender y servidas como `.glb` estáticos desde `public/`:
+
+- `public/models/HumanBase.glb` — cuerpo base (MPFB/MakeHuman, CC0). Ver `HumanBody.tsx`.
+- `public/models/organs/{mesh_id}.glb` — uno por cada `mesh_id` de `Server/scripts/seed.py` (`heart`, `liver`, `lung_left`, `lung_right`, `kidney_left`, `kidney_right`, `stomach`). 6 vienen del [Human Reference Atlas](https://apps.humanatlas.io/kg-explorer/?do=ref-organ) (CC BY 4.0); `stomach` de [BodyParts3D](https://lifesciencedb.jp/bp3d/) (CC BY 4.0) porque el Atlas no lo tiene. **Ambas fuentes requieren atribución visible en la app — pendiente de añadir a la UI.**
+- `public/draco/` — decoder de Draco vendorizado (todos los `.glb` están comprimidos con Draco).
+
+Piezas del visor, en `src/features/explorer/`:
+
+| Archivo | Rol |
+|---|---|
+| `Scene.tsx` | `<Canvas>` de R3F, luces, `OrbitControls`. Envuelve el contenido en `<Suspense>` — imprescindible con varios `useGLTF` cargando a la vez, si no el árbol se queda colgado sin lanzar ninguna petición. |
+| `PlaceholderBody.tsx` | Compone `HumanBody` + los 7 `RealOrganMesh`, escalados x2 (`BODY_SCALE`) para facilitar el clic. El nombre es historia: ya no queda ningún placeholder ahí dentro. |
+| `HumanBody.tsx` | Carga `HumanBase.glb`, semi-transparente, para que los órganos se vean a través de la piel. |
+| `RealOrganMesh.tsx` | Carga el `.glb` de un órgano, extrae su geometría (`nodes[meshId].geometry` — `useGLTF` ya expone ese mapa, no hace falta recorrer la escena a mano) y la pasa a `OrganMesh`. |
+| `OrganMesh.tsx` | Primitiva clicable/hoverable compartida: un único `<mesh>` con el color de hover/selección, sin cambios desde antes de las mallas reales. |
+| `organGeometry.ts` | Wrapper de `useGLTF` con la ruta del decoder Draco y el preload de los 7 órganos. |
+| `OrganDetailsPanel.tsx` | Resuelve el órgano seleccionado contra el backend (`useOrganByMesh`) y muestra su ficha. |
+
+**Pendiente conocido:** la posición de los 7 órganos dentro del cuerpo no es correcta todavía (se ven, pero no encajan en su sitio anatómico) — el usuario la está ajustando a mano.
 
 ## Tipos de la API
 

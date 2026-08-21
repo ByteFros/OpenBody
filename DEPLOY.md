@@ -66,7 +66,7 @@ docker build --build-arg VITE_API_BASE_URL=https://api.ejemplo.com ./Client
 
 - **PostgreSQL.** Hoy se usa SQLite sobre un volumen. Funciona para una demo, pero no permite réplicas ni backups en caliente. Migrar es `uv add asyncpg`, cambiar `DATABASE_URL` a `postgresql+asyncpg://…` y añadir el servicio al compose; el código de la aplicación no cambia.
 - **HTTPS.** nginx sirve HTTP plano. Detrás de un balanceador que termine TLS ya vale; si no, hay que añadir certificados.
-- **Assets 3D.** Cuando lleguen los modelos glTF irán a un bucket/CDN, no dentro de la imagen.
+- **Assets 3D.** El plan original era servirlos desde un bucket/CDN, nunca dentro de la imagen. Al llegar el primer modelo (`HumanBase.glb`, 87 KB) se decidió commitearlo directo a `Client/public/` por simplicidad — y los 7 órganos del MVP (`Client/public/models/organs/`, ~118 KB en total) siguieron el mismo criterio. Revisar esta decisión si el peso total crece considerablemente (más órganos, mayor detalle/LOD) o si el tamaño de la imagen empieza a doler.
 
 ## Nota sobre Docker en este equipo
 

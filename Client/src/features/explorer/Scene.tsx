@@ -1,4 +1,4 @@
-import { useRef } from 'react'
+import { Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
@@ -19,7 +19,9 @@ export function Scene({ selectedMeshId, onSelect }: SceneProps) {
       <Canvas camera={{ position: [0, 0, 5], fov: 45 }}>
         <ambientLight intensity={0.6} />
         <directionalLight position={[3, 4, 5]} intensity={1} />
-        <PlaceholderBody selectedMeshId={selectedMeshId} onSelect={onSelect} />
+        <Suspense fallback={null}>
+          <PlaceholderBody selectedMeshId={selectedMeshId} onSelect={onSelect} />
+        </Suspense>
         <OrbitControls ref={controlsRef} makeDefault minDistance={2} maxDistance={10} />
       </Canvas>
 
