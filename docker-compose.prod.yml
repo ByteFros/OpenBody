@@ -15,7 +15,10 @@ services:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      # 127.0.0.1, no localhost: en esta imagen "localhost" resuelve primero a ::1 y
+      # nginx solo escucha en 0.0.0.0:80, así que wget fallaba con connection refused
+      # aunque el contenedor sirviera tráfico externo sin problema.
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/"]
       interval: 30s
       timeout: 3s
       retries: 3
