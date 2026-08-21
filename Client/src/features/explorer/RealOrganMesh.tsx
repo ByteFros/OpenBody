@@ -1,3 +1,5 @@
+import type * as THREE from 'three'
+
 import { OrganMesh } from './OrganMesh'
 import { ORGANS_BASE, useOrganGLTF } from './organGeometry'
 
@@ -14,14 +16,25 @@ type RealOrganMeshProps = {
 /** Órgano real exportado de Blender (ver project_openbody_organos_human_atlas). */
 export function RealOrganMesh({ meshId, isSelected, onSelect }: RealOrganMeshProps) {
   const { nodes } = useOrganGLTF(`${ORGANS_BASE}/${meshId}.glb`)
-  const geometry = nodes[meshId]?.geometry
+  const node = nodes[meshId] as THREE.Mesh | undefined
 
-  if (!geometry) {
+  if (!node?.geometry) {
     throw new Error(`Organ GLB for "${meshId}" has no mesh geometry on node "${meshId}"`)
   }
 
+  const geometry = node.geometry
+
+  // El Human Atlas exporta cada órgano con su propia traslación de nodo (para alinearlo dentro
+  // de su escena de origen); al extraer solo `geometry` esa traslación se perdía y los 7 órganos
+  // acababan superpuestos en el mismo punto. Hay que sumarla al offset del cuerpo, no descartarla.
+  const position: [number, number, number] = [
+    node.position.x + BODY_POSITION[0],
+    node.position.y + BODY_POSITION[1],
+    node.position.z + BODY_POSITION[2],
+  ]
+
   return (
-    <OrganMesh meshId={meshId} position={BODY_POSITION} isSelected={isSelected} onSelect={onSelect}>
+    <OrganMesh meshId={meshId} position={position} isSelected={isSelected} onSelect={onSelect}>
       <primitive object={geometry} attach="geometry" />
     </OrganMesh>
   )

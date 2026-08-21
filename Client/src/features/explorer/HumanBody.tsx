@@ -41,6 +41,12 @@ export function HumanBody({ onSelect }: HumanBodyProps) {
   }, [scene])
 
   function handleClick(event: ThreeEvent<MouseEvent>) {
+    // La piel está siempre más cerca de la cámara que los órganos reales (que ahora viven dentro
+    // de la cavidad torácica, no fuera de ella como las esferas placeholder). Si el rayo también
+    // atraviesa un órgano detrás de la piel, hay que dejarlo pasar para que reciba el clic en vez
+    // de deseleccionar aquí.
+    if (event.intersections.length > 1) return
+
     event.stopPropagation()
     onSelect(null)
   }
