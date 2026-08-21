@@ -9,7 +9,12 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/80",
+        // El hover original era bg-primary/80, que sobre fondo claro aclara el azul
+        // y deja el texto del CTA en 4,23:1 (por debajo de AA). Mezclar hacia
+        // --foreground se aleja siempre de --primary-foreground, así que el contraste
+        // sube en ambos temas (7,35 claro / 9,50 oscuro).
+        default:
+          "bg-primary text-primary-foreground hover:bg-[color-mix(in_oklch,var(--primary),var(--foreground)_12%)]",
         outline:
           "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
